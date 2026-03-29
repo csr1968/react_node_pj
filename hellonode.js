@@ -2,6 +2,12 @@ const express = require('express');
 const http = require('http');
 const {Server} = require('socket.io');
 
+// .env 파일 불러오는 패키지
+require('dotenv').config();
+
+const Groq = require('groq-sdk')
+const groq = new Groq({ apikey: process.env.GROQ_API_KEY})
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -11,16 +17,72 @@ const io = new Server(server, {
     }
 });
 
+// API 호출
+async function callGemini(messages) {
+    
+    // const response = await fetch(
+    //     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    //     {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({
+    //             contents: messages
+    //         })
+    //     }
+    // );
+    // const data = await response.json();
+    // return data.candidates[0].content.parts[0].text;
+
+    const groqMessages = messages.map((msg) => ({
+        role: msg.role === 'model' ? 'assistant' : msg.role,
+        content: msg.parts[0].text
+    }));
+
+    const response = await groq.chat.completions.create({
+        model: 'llama-3.3-70b-versatile',
+        messages: groqMessages,
+    });
+
+    return response.choices[0].message.content;
+}
+
 io.on('connection', (socket) =>{
     console.log('유저 접속:', socket.id);
 
-    socket.on('send_message', (data) => {
-        console.log('메시지 수신:', data);
-        io.emit('receive_message', data);
+    io.emit('notice', { text: '새로운 유저가 입장했습니다.' });
+
+    let conversationHistory = [];
+
+    socket.on('send_message', async (data) => {
+        console.log('메시지 수신:', data.text);
+
+        conversationHistory.push({
+            role: 'user',
+            parts: [{ text: data.text }]
+        });
+
+        try {
+            const aiReply = await callGemini(conversationHistory);
+
+            conversationHistory.push({
+                role: 'model',
+                parts: [{ text:aiReply }]
+            });
+
+            socket.emit('receive_message', { sender: 'ai', text: aiReply });
+        } catch (error) {
+            console.error('API 오류', JSON.stringify(error.message));
+            socket.emit('receive_message', {
+                sender: 'ai',
+                text: '오류 발생. 다시 시도해주세요'
+            });
+        }
     });
 
     socket.on('disconnect', () => {
         console.log('유저 퇴장:', socket.id);
+
+        io.emit('notice', { text: '유저가 퇴장했습니다.' });
     });
 });
 
