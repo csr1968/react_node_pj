@@ -91,7 +91,7 @@ io.on('connection', (socket) =>{
 app.use(express.static(path.join(__dirname, 'pj-app/build')));
 
 // 모든 요청을 React index.html로 연결
-app.length('*', (req,res) => {
+app.get('*', (req,res) => {
     res.sendFile(path.join(__dirname, 'pj-app/build', 'index.html'));
 })
 
