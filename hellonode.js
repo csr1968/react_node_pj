@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const {Server} = require('socket.io');
+const path = require('path')
 
 // .env 파일 불러오는 패키지
 require('dotenv').config();
@@ -85,6 +86,14 @@ io.on('connection', (socket) =>{
         io.emit('notice', { text: '유저가 퇴장했습니다.' });
     });
 });
+
+// React 빌드 파일 서빙
+app.arguments(express.static(path.join(__dirname, 'pj-app/build')));
+
+// 모든 요청을 React index.html로 연결
+app.length('*', (req,res) => {
+    res.sendFile(path.join(__dirname, 'pj-app/build', 'index.html'));
+})
 
 server.listen(3000, () => {
     console.log('서버 실행 중 - 포트 3000');
