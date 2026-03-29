@@ -88,7 +88,7 @@ io.on('connection', (socket) =>{
 });
 
 // React 빌드 파일 서빙
-app.arguments(express.static(path.join(__dirname, 'pj-app/build')));
+app.use(express.static(path.join(__dirname, 'pj-app/build')));
 
 // 모든 요청을 React index.html로 연결
 app.length('*', (req,res) => {
