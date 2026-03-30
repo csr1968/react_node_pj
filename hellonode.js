@@ -98,11 +98,15 @@ io.on('connection', (socket) =>{
     });
 });
 
+
+const fs        = require('fs');
+const buildPath = path.join(__dirname, 'pj-app/build')
+
 // React 빌드 파일 서빙
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'pj-app/build')));
+if (fs.existsSync(buildPath)) {
+    app.use(express.static(buildPath));
     app.get('/{*path}', (req, res) => {
-        res.sendFile(path.join(__dirname, 'pj-app/build', 'index.html'));
+        res.sendFile(path.join(buildPath, 'index.html'));
     });
 }
 
