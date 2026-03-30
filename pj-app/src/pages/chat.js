@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 
 
-const socket = io('http://localhost:3000');
+const socket = io(window.location.origin);
 
 function App() {
   // localStorage에서 토큰과 유저명 가져오기
