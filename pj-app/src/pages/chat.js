@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../App.css';
 import io from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
+import Sidebar from '../components/sidebar'
 
 
 const socket = io(window.location.origin);
@@ -28,6 +29,7 @@ function App() {
 
   // isloading: Ai가 답변중일 때 로딩 애니메이션
   const [isLoading, setIsLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const chatBottomRef = useRef(null);
 
@@ -68,41 +70,41 @@ function App() {
   };
 
   return (
+  <div className="page-container">
+
+    {/* 사이드바 컴포넌트 */}
+    <Sidebar
+      isOpen={isSidebarOpen}
+      onClose={() => setIsSidebarOpen(false)}
+    />
+
     <div className="app-container">
+
+      {/* 상단 헤더 */}
       <div className="header">
+
+        {/* 햄버거 버튼 - 클릭하면 사이드바 열림 */}
+        <button
+          className="hamburger-button"
+          onClick={() => setIsSidebarOpen(true)}
+        >
+          ☰
+        </button>
+
         <div className="header-icon">🤖</div>
         <div>
           <p className="header-name">AI 어시스턴트</p>
           <p className="header-status">온라인</p>
         </div>
-        <button
-          className="logout-button"
-          onClick={() => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            navigate('/');
-          }}
-        >
-          로그아웃
-        </button>
+
+        {/* 기존 로그아웃 버튼 제거 - 사이드바로 이동했어요 */}
+
       </div>
 
+      {/* 메시지 목록 */}
       <div className="chat-box">
         {chatList.map((chat, index) => (
-
-          chat.sender === 'notice' ? (
-            <div key={index} style={{ textAlign: 'center' }}>
-              <span style={{
-                fontsize: '12px',
-                color: '#666',
-                backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                padding: '4px 12px',
-                borderRadius: '12px'
-              }}>{chat.text}</span>
-            </div>
-          ) : chat.sender === 'ai' ? (
-
-            // AI 메시지
+          chat.sender === 'ai' ? (
             <div key={index} className="message-row-ai">
               <div className="ai-icon">🤖</div>
               <div className="ai-message-group">
@@ -112,20 +114,15 @@ function App() {
                 </div>
               </div>
             </div>
-
           ) : (
-
-            // 내 메시지
             <div key={index} className="message-row-me">
               <div className="bubble-me">
                 <p className="bubble-text">{chat.text}</p>
               </div>
             </div>
-
           )
         ))}
 
-        {/* 로딩 중일 때만 점점점 애니메이션 표시 */}
         {isLoading && (
           <div className="message-row-ai">
             <div className="ai-icon">🤖</div>
@@ -139,6 +136,8 @@ function App() {
             </div>
           </div>
         )}
+
+        <div ref={chatBottomRef} />
       </div>
 
       {/* 하단 입력 영역 */}
@@ -158,7 +157,8 @@ function App() {
       </div>
 
     </div>
-  );
+  </div>
+);
 }
 
 export default App;

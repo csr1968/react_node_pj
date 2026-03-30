@@ -1,10 +1,9 @@
 /* 전체 앱 배경 */
 .app-container {
   display: flex;
-  margin: 0 auto;
-  max-width: 480px;
   flex-direction: column;
   height: 100vh;
+  width: 100%;
   background-color: #B2C7E8;
 }
 
@@ -213,3 +212,28 @@ border-radius: 0 12px 12px 12px;
   font-size: 13px;
   color: #e53935;
 }
+
+.page-container {
+  position: relative;
+  width: 480px;
+  max-width: 480px;
+  height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.hamburger-button {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #1a1a1a;
+  padding: 4px 8px;
+  margin-right: 8px;
+  border-radius: 4px;
+}
+
+.hamburger-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
