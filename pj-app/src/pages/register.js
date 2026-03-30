@@ -9,10 +9,23 @@ function Register() {
     
     const navigate = useNavigate();
 
+    // 비밀번호 유효성 검사
+    const passwordCheck = {
+      length : password.length >= 8,
+      number : /[0-9]/.test(password),
+      special: /[!@#$%^&*]/.test(password),
+    };
+    const isPasswordValid = Object.values(passwordCheck).every(Boolean);
+
     const handleRegister = async () => {
         if (!username || !password || !confirmPassword) {
             alert('모든 항목을 입력해주세요.');
             return;
+        }
+
+        if (!isPasswordValid) {
+          alert('비밀번호 조건을 모두 만족해주세요.');
+          return;
         }
         
         if (password !== confirmPassword) {
@@ -62,6 +75,19 @@ function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        {password.length > 0 && (
+          <div className="password-rules">
+            <p className={passwordCheck.length ? 'rule-pass' : 'rule-fail'}>
+              {passwordCheck.length ? '✓' : '✗'} 8자리 이상
+            </p>
+            <p className={passwordCheck.number ? 'rule-pass' : 'rule-fail'}>
+              {passwordCheck.number ? '✓' : '✗'} 숫자 포함
+            </p>
+            <p className={passwordCheck.special ? 'rule-pass' : 'rule-fail'}>
+              {passwordCheck.special ? '✓' : '✗'} 특수문자 포함
+            </p>
+          </div>
+        )}
         <input
           className="auth-input"
           type="password"
@@ -74,6 +100,12 @@ function Register() {
             }
           }}
         />
+
+        {confirmPassword.length > 0 && (
+          <p className={password === confirmPassword ? 'rule-pass' : 'rule-fail'}>
+            {password === confirmPassword ? '비밀번호가 일치합니다' : '비밀번호가 일치하지 않습니다'}
+          </p>
+        )}    
 
         <button className="auth-button" onClick={handleRegister}>
           회원가입

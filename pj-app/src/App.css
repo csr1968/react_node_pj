@@ -191,3 +191,25 @@ border-radius: 0 12px 12px 12px;
 .logout-button:hover {
   background-color: #F5DC00;
 }
+
+.password-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.rule-pass {
+  margin: 0;
+  font-size: 13px;
+  color: #4CAF50;
+}
+
+.rule-fail {
+  margin: 0;
+  font-size: 13px;
+  color: #e53935;
+}

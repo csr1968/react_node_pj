@@ -9,6 +9,11 @@ router.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
 
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({ message: '비밀번호 조건을 만족하지 않습니다.'});
+        }
+
         const existingUser = await User.findOne({ username });
         if (existingUser) {
             return res.status(400).json({ message: '이미 사용중인 아이디입니다.' });
