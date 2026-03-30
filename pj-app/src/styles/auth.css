@@ -1,0 +1,83 @@
+/* 전체 화면 중앙 정렬 */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #B2C7E8;
+}
+
+.auth-box {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 타이틀 */
+.auth-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.auth-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin: 0 0 8px;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.auth-input:focus {
+    border-color: #5B8FCC;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 13px;
+    background-color: #FEE500;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1a1a1a;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.auth-button:hover {
+    background-color: #F5DC00;
+}
+
+.auth-link {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin: 4px 0 0;
+}
+
+.auth-link span {
+    color: #5B8FCC;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.auth-link span:hover {
+    text-decoration: underline;
+}

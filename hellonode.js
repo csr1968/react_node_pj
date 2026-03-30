@@ -1,7 +1,9 @@
-const express = require('express');
-const http = require('http');
-const {Server} = require('socket.io');
-const path = require('path')
+const express    = require('express');
+const http       = require('http');
+const {Server}   = require('socket.io');
+const path       = require('path')
+const mongoose   = require('mongoose')
+const authRouter = require('./routes/auth');
 
 // .env 파일 불러오는 패키지
 require('dotenv').config();
@@ -9,9 +11,17 @@ require('dotenv').config();
 const Groq = require('groq-sdk')
 const groq = new Groq({ apikey: process.env.GROQ_API_KEY})
 
-const app = express();
+const app  = express();
+
+app.use(express.json());
+app.use('/api/auth', authRouter);
+
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => console.log('MongoDB 연결 성공'))
+    .catch((err) => console.log('MongoDB 연결 실패: ', err));
+
 const server = http.createServer(app);
-const io = new Server(server, {
+const io     = new Server(server, {
     cors: {
         origin: "http://localhost:3001",
         methods: ["GET", "POST"]
@@ -35,12 +45,12 @@ async function callGemini(messages) {
     // return data.candidates[0].content.parts[0].text;
 
     const groqMessages = messages.map((msg) => ({
-        role: msg.role === 'model' ? 'assistant' : msg.role,
+        role   : msg.role === 'model' ? 'assistant' : msg.role,
         content: msg.parts[0].text
     }));
 
-    const response = await groq.chat.completions.create({
-        model: 'llama-3.3-70b-versatile',
+    const response     = await groq.chat.completions.create({
+        model   : 'llama-3.3-70b-versatile',
         messages: groqMessages,
     });
 
@@ -58,7 +68,7 @@ io.on('connection', (socket) =>{
         console.log('메시지 수신:', data.text);
 
         conversationHistory.push({
-            role: 'user',
+            role : 'user',
             parts: [{ text: data.text }]
         });
 
@@ -66,16 +76,17 @@ io.on('connection', (socket) =>{
             const aiReply = await callGemini(conversationHistory);
 
             conversationHistory.push({
-                role: 'model',
+                role : 'model',
                 parts: [{ text:aiReply }]
             });
 
             socket.emit('receive_message', { sender: 'ai', text: aiReply });
         } catch (error) {
             console.error('API 오류', JSON.stringify(error.message));
+            
             socket.emit('receive_message', {
                 sender: 'ai',
-                text: '오류 발생. 다시 시도해주세요'
+                text  : '오류 발생. 다시 시도해주세요'
             });
         }
     });
@@ -88,12 +99,12 @@ io.on('connection', (socket) =>{
 });
 
 // React 빌드 파일 서빙
-app.use(express.static(path.join(__dirname, 'pj-app/build')));
-
-// 모든 요청을 React index.html로 연결
-app.get('/{*path}', (req, res) => {
-    res.sendFile(path.join(__dirname, 'pj-app/build', 'index.html'));
-})
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'pj-app/build')));
+    app.get('/{*path}', (req, res) => {
+        res.sendFile(path.join(__dirname, 'pj-app/build', 'index.html'));
+    });
+}
 
 server.listen(3000, () => {
     console.log('서버 실행 중 - 포트 3000');

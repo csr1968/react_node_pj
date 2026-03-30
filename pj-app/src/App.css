@@ -175,3 +175,19 @@ border-radius: 0 12px 12px 12px;
   align-items: center;
   justify-content: center;
 }
+
+.logout-button {
+  margin-left: auto;
+  padding: 6px 14px;
+  background-color: #FEE500;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #1a1a1a;
+}
+
+.logout-button:hover {
+  background-color: #F5DC00;
+}
