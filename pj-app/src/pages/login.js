@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/auth.css';
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
     const navigate    = useNavigate();
+
+    useEffect(() => {
+        const params   = new URLSearchParams(window.location.search);
+        const token    = params.get('token');
+        const username = params.get('username');
+
+        if (token && username) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('username', username);
+            navigate('/chat');
+        }
+    }, []);
+
     const handleLogin = async () => {
         if (!username || !password) {
             alert('아이디와 비밀번호를 입력해주세요.');
@@ -34,6 +46,13 @@ function Login() {
             console.error('로그인 오류: ', error);
             alert('서버 오류가 발생했습니다.');
         }
+    };
+
+    const handleGoogleLogin = () => {
+        const serverUrl = window.location.port === '3001'
+        ? 'http://localhost:3000'
+        : window.location.origin;
+        window.location.href = `${serverUrl}/api/auth/google`;
     };
     
     return (
@@ -64,6 +83,20 @@ function Login() {
 
                 <button className="auth-button" onClick={handleLogin}>
                     로그인
+                </button>
+
+                <div className="auth-divider">
+                    <span>또는</span>
+                </div>
+
+                <button className="google-button" onClick={handleGoogleLogin}>
+                    <img
+                        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                        alt="google"
+                        width="20"
+                        height="20"
+                    />
+                    구글로 로그인
                 </button>
 
                 <p className="auth-link">

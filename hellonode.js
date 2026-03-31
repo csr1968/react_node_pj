@@ -4,6 +4,7 @@ const {Server}   = require('socket.io');
 const path       = require('path')
 const mongoose   = require('mongoose')
 const authRouter = require('./routes/auth');
+const passport   = require('passport');
 
 // .env 파일 불러오는 패키지
 require('dotenv').config();
@@ -14,6 +15,7 @@ const groq = new Groq({ apikey: process.env.GROQ_API_KEY})
 const app  = express();
 
 app.use(express.json());
+app.use(passport.initialize());
 app.use('/api/auth', authRouter);
 
 mongoose.connect(process.env.MONGO_URL)

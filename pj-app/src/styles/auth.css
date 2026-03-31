@@ -81,3 +81,42 @@
 .auth-link span:hover {
     text-decoration: underline;
 }
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 4px 0;
+}
+
+.auth-divider::before
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.auth-divider span {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.google-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #333;
+}
+
+.google-button:hover {
+    background-color: #f5f5f5;
+}
