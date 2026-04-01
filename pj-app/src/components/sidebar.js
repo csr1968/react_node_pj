@@ -8,6 +8,7 @@ function Sidebar({ isOpen, onClose }) {
 
     const menuItems = [
         {label: '채팅', path: '/chat'},
+        {label: '게시판', path: '/board'},
         // 나중에 페이지 추가시 여기에 추가
     ];
 

@@ -5,6 +5,7 @@ const path       = require('path')
 const mongoose   = require('mongoose')
 const authRouter = require('./routes/auth');
 const passport   = require('passport');
+const postRouter = require('./routes/post');
 
 // .env 파일 불러오는 패키지
 require('dotenv').config();
@@ -17,6 +18,7 @@ const app  = express();
 app.use(express.json());
 app.use(passport.initialize());
 app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter);
 
 mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log('MongoDB 연결 성공'))
